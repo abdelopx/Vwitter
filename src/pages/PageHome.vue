@@ -16,45 +16,33 @@
     </div>
     <q-separator class="separator" size="10px" color="grey-2"/>
 
-    <q-list>
-      <q-item v-for="tweet in tweets" :key="tweet.date" class="q-py-md">
-        <q-item-section avatar top>
-          <q-avatar>
-            <img src="https://cdn.quasar.dev/img/avatar2.jpg">
-          </q-avatar>
-        </q-item-section>
-
-        <q-item-section>
-          <q-item-label class="text-subtitle-1">
-            <strong>abdelopx</strong>
-            <span class="text-grey-7">@abdelopx36</span>
-            </q-item-label>
-          <q-item-label class="tweet-content text-body1">
-            {{ tweet.content }}
-          </q-item-label>
-          <div class="tweet-icons row justify-between q-pt-md">
-            <q-btn flat round color="grey" size="sm" icon="far fa-comment" />
-            <q-btn flat round color="grey" size="sm" icon="fas fa-retweet" />
-            <q-btn flat round color="grey" size="sm" icon="far fa-heart" />
-            <q-btn flat round color="grey" size="sm" icon="fas fa-trash" />
-          </div>
-        </q-item-section>
-        <q-item-section side top>
-          {{relativeDate(tweet.date)}}
-        </q-item-section>
-        
-      </q-item>
+<q-list>
+  <transition-group
+  appear
+  enter-active-class="animated fadeIn slow"
+  leave-active-class="animated fadeOut slow">
+      <tweet-item class="tweet-item" v-for="tweet in tweets"
+      @delete-tweet="deleteTweet(tweet)"
+      :key="tweet.date"
+      :content="tweet.content"
+      :date="tweet.date"
+      ></tweet-item>
+  </transition-group>
     </q-list>
+
+    
     
   </q-page>
 </template>
 
 <script>
-import { defineComponent } from 'vue';
-import { formatDistance } from 'date-fns'
 
-export default defineComponent({
-  name: 'PageHome',
+import TweetItem from '../components/TweetItem.vue';
+
+export default {
+  components: {
+    TweetItem,
+  },
   data() {
     return {
       newTweet: '',
@@ -76,15 +64,17 @@ export default defineComponent({
         content: this.newTweet,
         date: Date.now(),
       }
+      this.newTweet = '';
       this.tweets.unshift(tweet);
-      console.log(this.tweets);
     },
-    relativeDate(value) {
-      return formatDistance(value, new Date()) + " ago";
-    }
+    deleteTweet(tweetSelected) {
+      let index = this.tweets.findIndex(tweet => tweet.date === tweetSelected.date);
+      this.tweets.splice(index,1);
+    },
+    
 
   }
-})
+}
 </script>
 
 <style lang="sass">
@@ -104,5 +94,8 @@ export default defineComponent({
 
 .tweet-icons
   margin-left: -5px
+
+.tweet-item:not(:first-child)
+  border-top: 1px solid rgba(0,0,0,0.12)
 
 </style>
