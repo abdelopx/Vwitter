@@ -14,7 +14,8 @@
           <router-link to="/login">
             <q-btn class="q-pl-xl q-pr-xl" size="md" unelevated rounded color="primary" label="Login" />
             </router-link>
-          <router-link to="/register"><q-btn class="q-pl-xl q-pr-xl q-mr-lg" size="md" unelevated rounded color="primary" label="Sign up" /></router-link>
+          <router-link class="gt-xs" to="/register"><q-btn class="q-pl-xl q-pr-xl q-mr-lg" size="md" unelevated rounded color="primary" label="Sign up" /></router-link>
+          <router-link to="/register"><q-btn class="lt-sm q-mt-lg q-pl-xl q-pr-xl q-mr-lg" size="md" unelevated rounded color="primary" label="Sign up" /></router-link>
         </div>
 </div>
 </div>
