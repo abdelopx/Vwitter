@@ -55,7 +55,7 @@ import {db,fb} from '../../boot/firebase.js';
                 profilePicture: this.image,
             };
             this.$store.dispatch('auth/signup',payload);
-            this.$router.replace('/');
+            this.$router.replace('/login');
         },
 
         uploadProfileImage() {
