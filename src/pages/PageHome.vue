@@ -1,11 +1,17 @@
 <template>
-  <q-page>
+  <q-page class="relative-position">
+    <q-scroll-area
+      class="absolute full-width full-height"
+      :thumb-style="thumbStyle"
+      :content-style="contentStyle"
+      :content-active-style="contentActiveStyle"
+    >
     <div class="q-py-lg q-px-md items-end row items-end q-col-gutter-md">
       <div class="col">
         <q-input class="new-tweet" bottom-slots v-model="newTweet" placeholder="What's happening ?" counter maxlength="280" autogrow>
         <template v-slot:before>
           <q-avatar size="xl">
-            <img src="https://cdn.quasar.dev/img/avatar5.jpg">
+            <img :src="profilePicture">
           </q-avatar>
         </template>
       </q-input>
@@ -15,64 +21,99 @@
       </div>
     </div>
     <q-separator class="separator" size="10px" color="grey-2"/>
-
-<q-list>
+    <q-list>
+  <div v-if="isLoading" class="absolute-center">
+    <q-spinner-oval
+          color="primary"
+          size="lg"
+          :thickness="15"
+        />
+        <q-tooltip :offset="[0, 8]">QSpinnerOval</q-tooltip>
+  </div>
   <transition-group
+  v-else-if="!isLoading"
   appear
   enter-active-class="animated fadeIn slow"
   leave-active-class="animated fadeOut slow">
-      <tweet-item class="tweet-item" v-for="tweet in tweets"
-      @delete-tweet="deleteTweet(tweet)"
-      :key="tweet.date"
+      <tweet-item class="tweet-item" v-for="tweet in fetchedTweets"
+      :key="tweet.id"
+      :id="tweet.id"
       :content="tweet.content"
       :date="tweet.date"
+      :liked="tweet.liked"
+      :userId="tweet.userId"
+      :users="users"
+      :actualUserId="actualUser.userId"
       ></tweet-item>
   </transition-group>
     </q-list>
-
-    
-    
+    </q-scroll-area>
   </q-page>
 </template>
 
 <script>
-
 import TweetItem from '../components/TweetItem.vue';
 
 export default {
   components: {
     TweetItem,
   },
+  created() {
+    this.loadTweets();
+    this.fetchActualUser();
+    this.fetchUser();
+  },
   data() {
     return {
       newTweet: '',
-      tweets: [
-        {
-          content: "Lorem ipsum, dolor sit amet consectetur adipisicing elit Beate odit enim, sint nequ",
-          date: 1618414579756,
-        },
-        {
-          content: "Lorem ipsum, dolor sit amet consectetur adipisicing elit Beate odit enim, sint nequ",
-          date: 1618414629013,
-        },
-      ],
+      isLoading: false,
+      actualUser: null,
+      users: null,
     };
   },
+  computed: {
+    fetchedTweets() {
+      return this.$store.getters['tweets/getTweets'];
+    },
+    profilePicture() {
+      return this.actualUser.profilePicture;
+    },
+    
+  },
   methods: {
-    addNewTweet(){
+    async addNewTweet(){
       const tweet = {
         content: this.newTweet,
         date: Date.now(),
-      }
+        liked: false, 
+        userId: this.$store.getters['users/userId'],    
+        }
       this.newTweet = '';
-      this.tweets.unshift(tweet);
+      try {
+        this.$store.dispatch('tweets/addTweet',tweet);
+      } catch(err) {
+        console.log(err);
+      }
     },
-    deleteTweet(tweetSelected) {
-      let index = this.tweets.findIndex(tweet => tweet.date === tweetSelected.date);
-      this.tweets.splice(index,1);
-    },
-    
 
+    async loadTweets() {
+      this.isLoading = true;
+      try {
+        await this.$store.dispatch('tweets/fetchTweets');
+      } catch (error) {
+        console.log(error);
+      }
+      this.isLoading = false;
+    },
+    fetchActualUser() {
+      this.actualUser = this.$store.getters['users/getActualUser'];
+    },
+
+    fetchUser() {
+         this.users = this.$store.getters['users/getUsers'];
+       },
+
+    
   }
 }
 </script>
@@ -91,9 +132,6 @@ export default {
 
 .tweet-content
   white-space: pre-line
-
-.tweet-icons
-  margin-left: -5px
 
 .tweet-item:not(:first-child)
   border-top: 1px solid rgba(0,0,0,0.12)

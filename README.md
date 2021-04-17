@@ -1,3 +1,5 @@
+This is a simple application created using VueJs and Vuex to replicate basic design and functionality of the official Twitter app. It is based on Quasar Framework.
+
 # Vwitter (vwitter)
 
 A twitter clone made using Vue js
@@ -12,15 +14,4 @@ npm install
 quasar dev
 ```
 
-### Lint the files
-```bash
-npm run lint
-```
 
-### Build the app for production
-```bash
-quasar build
-```
-
-### Customize the configuration
-See [Configuring quasar.conf.js](https://v2.quasar.dev/quasar-cli/quasar-conf-js).

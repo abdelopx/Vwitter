@@ -3,7 +3,7 @@
 
     <q-header bordered class="bg-white text-black">
       <q-toolbar>
-        <q-btn dense flat round icon="menu" @click="toggleLeftDrawer" />
+        <q-btn class="lt-md" dense flat round icon="menu" @click="toggleLeftDrawer" />
         <q-toolbar-title class="text-weight-bold">
           <span class="gt-sm">{{ $route.name }}</span> 
           <q-icon class="q-pa-md lt-md header-icon absolute-center" name="fab fa-twitter" size="lg" color="primary"></q-icon>
@@ -12,7 +12,7 @@
       </q-toolbar>
     </q-header>
 
-    <q-drawer show-if-above v-model="leftDrawerOpen" side="left" bordered :width="283">
+    <q-drawer show-if-above v-model="leftDrawerOpen" side="left" bordered :width="320">
       <q-icon class="q-pa-md" name="fab fa-twitter" size="lg" color="primary"></q-icon>
       <q-list>
       <q-item clickable v-ripple to="/" exact>
@@ -33,7 +33,7 @@
 
     </q-drawer>
 
-    <q-drawer show-if-above v-model="rightDrawerOpen" side="right" bordered>
+    <q-drawer show-if-above v-model="rightDrawerOpen" side="right" bordered :width="450">
       <q-input class="q-ma-md " color="teal" placeholder="Search in Vwitter" outlined rounded dense>
         <template v-slot:prepend>
           <q-icon name="search" />
